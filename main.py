@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 # Initialize Flask app
 app = Flask(__name__, static_folder='.')
-CORS(app, resources={r"/api/*": {"origins": os.getenv("ALLOWED_ORIGINS", "*")}})  # CORS security
+CORS(app, resources={r"/api/*": {"origins": os.getenv("ALLOWED_ORIGINS", "*")}})
 
 # Initialize Groq client
 try:
@@ -30,17 +30,14 @@ except Exception as e:
 
 @app.route('/')
 def serve_index():
-    """Serve the main HTML page."""
     return send_from_directory('.', 'index.html')
 
 @app.route('/<path:path>')
 def serve_static(path):
-    """Serve static files."""
     return send_from_directory('.', path)
 
 @app.route('/api/generate', methods=['POST'])
 def generate_description():
-    """Generate course description using Groq AI."""
     if not llm:
         return jsonify({"error": "AI service unavailable"}), 503
 
@@ -48,15 +45,12 @@ def generate_description():
         data = request.get_json()
         logging.info(f"📥 Received request: {data}")
 
-        # Validate input
         title = data.get("title", "").strip()
         category = data.get("category", "").strip()
         language = data.get("language", "English").strip()
-
         if not title or not category:
             return jsonify({"error": "Title and category are required"}), 400
 
-        # Construct prompt
         prompt = f"""
         Generate a professional course description with:
         - Title: {title}
@@ -69,17 +63,12 @@ def generate_description():
         3️⃣ Learning objectives
         4️⃣ A professional and engaging tone
         """
-
-        # Invoke AI model
         response = llm.invoke(prompt)
-
-        # Ensure response is valid
         if not response or not response.content:
             raise ValueError("Empty response from AI model")
 
         logging.info("✅ Successfully generated course description")
         return jsonify({"description": response.content, "status": "success"})
-
     except ValueError as ve:
         logging.error(f"⚠️ Validation error: {ve}")
         return jsonify({"error": str(ve)}), 400
@@ -88,4 +77,4 @@ def generate_description():
         return jsonify({"error": "An unexpected error occurred"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)), debug=os.getenv("DEBUG", "False") == "True")
+    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 5000)), debug=os.getenv("DEBUG", "False")=="True")
