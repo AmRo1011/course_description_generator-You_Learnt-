@@ -16,17 +16,13 @@ async function generateDescription() {
     loading.style.display = 'block';
 
     try {
-        const response = await fetch('http://localhost:5000/api/generate', {
+        const response = await fetch('/api/generate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                title: title,
-                category: category,
-                language: language
-            })
+            body: JSON.stringify({ title, category, language })
         });
 
         if (!response.ok) {
@@ -44,5 +40,6 @@ async function generateDescription() {
     } finally {
         btn.disabled = false;
         loading.style.display = 'none';
+        btn.blur();
     }
-} 
+}
