@@ -19,7 +19,7 @@ A web application that generates professional course descriptions using AI. Buil
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/course_description_generator.git
+git clone https://github.com/AmRo1011/course_description_generator.git
 cd course_description_generator
 ```
 
